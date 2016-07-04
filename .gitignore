@@ -89,5 +89,5 @@ ENV/
 .ropeproject
 
 # Project wise ignores
-datasets
-out
+datasets/*
+results/*
