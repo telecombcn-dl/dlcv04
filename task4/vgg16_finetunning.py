@@ -6,7 +6,7 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2
 from keras.layers.normalization import BatchNormalization
 from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
-from utils.datasets.terrassa import terrassa 
+from utils.datasets import terrassa
 
 
 nb_classes=10
