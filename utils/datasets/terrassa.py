@@ -13,6 +13,9 @@ import numpy as np
 
 
 def load_data(path="../../datasets/terrassa", download=True):
+  abspath = os.path.abspath(__file__)
+  dname = os.path.dirname(abspath)
+  os.chdir(dname)
   picklePath = path + "/terrassa.pickle"
   annotations_path = path + "/annotations.csv"
   # if file doesn't exist, create download and create the pickle, so next is fast
