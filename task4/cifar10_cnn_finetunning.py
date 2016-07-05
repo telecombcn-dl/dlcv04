@@ -12,7 +12,7 @@ save it in a different format, load it in Python 3 and repickle it.
 '''
 
 from __future__ import print_function
-from keras.datasets import cifar10
+from keras.datasets import cifar10, mnist
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
@@ -35,10 +35,14 @@ img_channels = 3
 weights_path="./temporal_weights/weights_cifar.hdf5"
 
 # the data, shuffled and split between train and test sets
-(X_train, y_train), (X_test, y_test) = terrassa.load_data()
+(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+# (X_train2, y_train2), (X_test2, y_test2) = cifar10.load_data()
+
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
+
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
@@ -71,7 +75,14 @@ model.add(Activation('softmax'))
 # LOADING WEIGHTS TO FINE-TUNNE THEM
 model.load_weights(weights_path)
 
-for layer in model.layers[:11]:
+model.layers.pop() 
+model.layers.pop()
+
+model.add(Dense(nb_classes))
+model.add(Activation('softmax'))
+
+
+for layer in model.layers[:17]:
   layer.trainable= False
 
 # let's train the model using SGD + momentum (how original).
