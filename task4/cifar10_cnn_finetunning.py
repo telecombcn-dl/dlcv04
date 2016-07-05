@@ -78,12 +78,18 @@ model.load_weights(weights_path)
 model.layers.pop() 
 model.layers.pop()
 
-model.add(Dense(nb_classes))
-model.add(Activation('softmax'))
-
-
-for layer in model.layers[:17]:
+for layer in model.layers:
   layer.trainable= False
+
+layer_last=Dense(nb_classes)
+layer_last.trainable=True
+
+layer_last2=Activation('softmax')
+layer_last2.trainable=True
+
+model.add(layer_last)
+model.add(layer_last2)
+
 
 # let's train the model using SGD + momentum (how original).
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
