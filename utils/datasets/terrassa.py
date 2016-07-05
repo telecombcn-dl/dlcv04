@@ -83,7 +83,7 @@ def load_folder(path, annotationPath=None):
       image = misc.imread(path + "/" + fn)
       image = imresize(image,[250,250])
       x.append(np.transpose(image, (2, 0, 1)))
-  return x, y
+  return np.asarray(x), np.asarray(y)
 
 
 if __name__ == "__main__":
