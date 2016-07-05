@@ -13,6 +13,7 @@ import numpy as np
 
 
 def load_data(path="../../datasets/terrassa", download=True):
+  previous_path=os.getcwd()
   abspath = os.path.abspath(__file__)
   dname = os.path.dirname(abspath)
   os.chdir(dname)
@@ -24,6 +25,7 @@ def load_data(path="../../datasets/terrassa", download=True):
     f = open(picklePath, 'rb')
     data = pickle.load(f)
     f.close()
+    os.chdir(previous_path)
     return data  # (X_train, y_train), (X_test, y_test)
 
   else:
@@ -46,6 +48,7 @@ def load_data(path="../../datasets/terrassa", download=True):
     f.close()
     os.unlink("../../datasets/terrassa/terrassa900-test.zip")
     os.unlink("../../datasets/terrassa/terrassa900-trainval.zip")
+    os.chdir(previous_path)
     return data
 
 
@@ -87,6 +90,6 @@ def load_folder(path, annotationPath=None):
 
 
 if __name__ == "__main__":
-  data = load_data(download=True)
+  data = load_data(download=False)
   print("Train: " + str(len(data[0][1])) + " Val: " + str(len(data[1][1])) )
 # (X_train, y_train), (X_test, y_test) = mnist.load_data()
