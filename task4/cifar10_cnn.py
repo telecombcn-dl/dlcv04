@@ -19,6 +19,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.utils import np_utils
+from keras.callbacks import ModelCheckpoint
 
 batch_size = 32
 nb_classes = 10
@@ -75,13 +76,16 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
+checkpointer = ModelCheckpoint(filepath="./temporal_weights/weights_cifar.hdf5", verbose=1, save_best_only=True)
+
 if not data_augmentation:
     print('Not using data augmentation.')
     model.fit(X_train, Y_train,
               batch_size=batch_size,
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
-              shuffle=True)
+              shuffle=True,
+              callbacks=[checkpointer])
 else:
     print('Using real-time data augmentation.')
 
@@ -107,4 +111,5 @@ else:
                         batch_size=batch_size),
                         samples_per_epoch=X_train.shape[0],
                         nb_epoch=nb_epoch,
-                        validation_data=(X_test, Y_test))
+                        validation_data=(X_test, Y_test),
+                        callbacks=[checkpointer])
