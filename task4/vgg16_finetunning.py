@@ -105,15 +105,15 @@ def VGG_16(weights_path=None):
 model=VGG_16("./weights/vgg16_weights.h5")
 # model = convnet('VGG_16',weights_path="./weights/vgg16_weights.h5", heatmap=False)
 
-# model.layers.pop() 
+model.layers.pop() 
 
-# for layer in model.layers:
-#     layer.trainable=False 
+for layer in model.layers:
+    layer.trainable=False 
 
-# layer_last=Dense(1000, activation='softmax')
-# layer_last.trainable=True
+layer_last=Dense(1000, activation='softmax')
+layer_last.trainable=True
 
-# model.add(layer_last)
+model.add(layer_last)
 
 
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
