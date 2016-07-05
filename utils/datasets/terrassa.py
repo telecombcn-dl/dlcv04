@@ -84,6 +84,6 @@ def load_folder(path, annotationPath=None):
 
 
 if __name__ == "__main__":
-  data = load_data(download=False)
+  data = load_data(download=True)
   print("Train: " + str(len(data[0][1])) + " Val: " + str(len(data[1][1])) )
 # (X_train, y_train), (X_test, y_test) = mnist.load_data()
