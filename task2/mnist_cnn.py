@@ -54,7 +54,7 @@ model.add(Activation('relu'))
 
 model.add(BatchNormalization()) #patillada 
 
-model.add()
+
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv,bias=None))
 model.add(Activation('relu'))
 
