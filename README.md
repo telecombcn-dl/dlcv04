@@ -6,6 +6,10 @@ Project slides
 
 https://github.com/imatge-upc/telecombcn-2016-dlcv/blob/gh-pages/slides/D1P-kickoff.pdf
 
+Our Slides
+
+https://docs.google.com/presentation/d/1daS4M7e5Grk6Ytqk2kdapNonDVCPKwiv5HxscIA8UQI/edit?usp=sharing
+
 TASK 1: ARCHITECTURE
 1. Build network for classification problem
 2. Study memory requirements and computational loads for different layers
