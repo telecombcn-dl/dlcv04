@@ -64,16 +64,16 @@ model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
-model.add(Dense(128),bias=None)
+model.add(Dense(128))
 model.add(Activation('relu'))
 
-model.add(BatchNormalization()) #"""patillada """
+#model.add(BatchNormalization()) #"""patillada """
 
 model.add(Dropout(0.5))
-model.add(Dense(nb_classes),bias=None)
+model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
-model.add(BatchNormalization()) #"""patillada """
+#model.add(BatchNormalization()) #"""patillada """
 
 
 model.compile(loss='categorical_crossentropy',
