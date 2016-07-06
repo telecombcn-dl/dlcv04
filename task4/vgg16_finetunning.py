@@ -50,7 +50,7 @@ data_augmentation = False
 def VGG_16(weights_path=None):
 
     model = Sequential()
-    model.add(ZeroPadding2D((1,1),input_shape=(3,224,224)))
+    model.add(ZeroPadding2D((1,1),input_shape=(3,250,250)))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
     model.add(ZeroPadding2D((1,1)))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
@@ -111,22 +111,22 @@ print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
-X_train2=np.zeros([len(X_train),3,224,224])
-X_test2=np.zeros([len(X_test),3,224,224])
+X_train2=np.zeros([len(X_train),3,250,250])
+X_test2=np.zeros([len(X_test),3,250,250])
 
 print(X_train[1,:,:,:].shape)
 
 for i in range(len(X_train)):
     image_aux=X_train[i,:,:,:]
     transposed_img=np.transpose(image_aux, (1, 2, 0))
-    image_aux2=imresize(transposed_img,[224,224])
+    image_aux2=imresize(transposed_img,[250,250])
     image_aux3=np.transpose(image_aux2, (2, 0, 1))
     X_train2[i,:,:,:]=image_aux3
 
 for i in range(len(X_test)):
     image_aux=X_test[i,:,:,:]
     transposed_img=np.transpose(image_aux, (1, 2, 0))
-    image_aux2=imresize(transposed_img,[224,224])
+    image_aux2=imresize(transposed_img,[250,250])
     image_aux3=np.transpose(image_aux2, (2, 0, 1))
     X_test2[i,:,:,:]=image_aux3
 
