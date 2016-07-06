@@ -12,8 +12,8 @@ import numpy as np
 
 
 nb_classes=10
-batch_size = 128
-nb_epoch = 5
+batch_size = 16
+nb_epoch = 200
 data_augmentation = False
 
 

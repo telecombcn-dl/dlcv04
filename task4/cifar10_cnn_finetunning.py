@@ -21,6 +21,8 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
 from utils.datasets import terrassa
+from scipy.misc import imresize
+import numpy as np
 
 batch_size = 32
 nb_classes = 10
@@ -70,6 +72,8 @@ model.layers.pop()
 for layer in model.layers:
   layer.trainable= False
 
+nb_classes=13
+
 layer_last=Dense(nb_classes)
 layer_last.trainable=True
 
@@ -92,6 +96,28 @@ model.compile(loss='categorical_crossentropy',
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
+
+X_train2=np.zeros([len(X_train),3,32,32])
+X_test2=np.zeros([len(X_test),3,32,32])
+
+print(X_train[1,:,:,:].shape)
+
+for i in range(len(X_train)):
+    image_aux=X_train[i,:,:,:]
+    transposed_img=np.transpose(image_aux, (1, 2, 0))
+    image_aux2=imresize(transposed_img,[32,32])
+    image_aux3=np.transpose(image_aux2, (2, 0, 1))
+    X_train2[i,:,:,:]=image_aux3
+
+for i in range(len(X_test)):
+    image_aux=X_test[i,:,:,:]
+    transposed_img=np.transpose(image_aux, (1, 2, 0))
+    image_aux2=imresize(transposed_img,[32,32])
+    image_aux3=np.transpose(image_aux2, (2, 0, 1))
+    X_test2[i,:,:,:]=image_aux3
+
+X_train=X_train2
+X_test=X_test2
 
 nb_classes = len(set(y_test))
 Y_train = np_utils.to_categorical(y_train, nb_classes)
