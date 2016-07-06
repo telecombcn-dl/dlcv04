@@ -52,13 +52,13 @@ model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
                         input_shape=(1, img_rows, img_cols)))
 model.add(Activation('relu'))
 
-model.add(BatchNormalization())"""patillada """
+model.add(BatchNormalization()) #patillada 
 
 model.add()
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv,no_bias=True))
 model.add(Activation('relu'))
 
-model.add(BatchNormalization())"""patillada """
+model.add(BatchNormalization()) #patillada """
 
 model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
 model.add(Dropout(0.25))
@@ -67,11 +67,14 @@ model.add(Flatten())
 model.add(Dense(128),no_bias=True)
 model.add(Activation('relu'))
 
-model.add(BatchNormalization())"""patillada """
+model.add(BatchNormalization()) #"""patillada """
 
 model.add(Dropout(0.5))
-model.add(Dense(nb_classes))
+model.add(Dense(nb_classes),no_bias=True)
 model.add(Activation('softmax'))
+
+model.add(BatchNormalization()) #"""patillada """
+
 
 model.compile(loss='categorical_crossentropy',
               optimizer='adadelta',
