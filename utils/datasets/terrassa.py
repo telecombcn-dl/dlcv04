@@ -38,6 +38,7 @@ def load_data(path="../../datasets/terrassa", download=True):
     X_train, y_train = load_folder(path + "/TerrassaBuildings900/train", annotations_path)
     print("Processing val.")
     X_val, y_val = load_folder(path + "/TerrassaBuildings900/val")
+    #Add also real test if unknown data is wanted
     #print("Processing test.")
     #X_test, y_test = load_folder(path + "/test")
 
@@ -51,6 +52,30 @@ def load_data(path="../../datasets/terrassa", download=True):
     os.chdir(previous_path)
     return data
 
+
+def load_data_without_unknown_class(path="../../datasets/terrassa", download=True):
+  (X_train, y_train), (X_test, y_test) = load_data()
+  X_train2 = list()
+  y_train2 = list()
+  X_test2 = list()
+  y_test2 = list()
+
+  for i in range(len(X_train)):
+    if (y_train[i] == 3): continue
+    X_train2.append(X_train[i])
+    y_train2.append(y_train[i])
+
+  for i in range(len(X_test)):
+    if (y_test[i] == 3): continue
+    X_test2.append(X_test[i])
+    y_test2.append(y_test[i])
+
+  X_train = np.asarray(X_train2)
+  y_train = np.asarray(y_train2)
+  X_test = np.asarray(X_test2)
+  y_test = np.asarray(y_test2)
+  data = [(X_train, y_train), (X_test, y_test)]
+  return data
 
 def execute_script():
   subprocess.call(['./terrassa_dataset.sh'])

@@ -10,13 +10,14 @@ from utils.datasets import terrassa
 from scipy.misc import imresize
 from random import shuffle
 import random
+import os
 
 import numpy as np
 
 nb_classes = 13
 batch_size = 16
-nb_epoch = 200
-data_augmentation = False
+nb_epoch = 1
+data_augmentation = True
 
 def pop_layer(model):
     if not model.outputs:
@@ -81,18 +82,13 @@ def VGG_16(weights_path=None):
     model.load_weights(weights_path)
   return model
 
-(X_train, y_train), (X_test, y_test) = terrassa.load_data()
+(X_train, y_train), (X_test, y_test) = terrassa.load_data_without_unknown_class()
 
-X_train2 = list()
-y_train2 = list()
+# reassign 40 samples to test (randomly), as sets are not well balanced
+X_train2 = list(X_train)
+y_train2 = list(y_train)
 X_test2 = list()
 y_test2 = list()
-
-
-for i in range(len(X_train)):
-  if(y_train[i] == 3): continue
-  X_train2.append(X_train[i])
-  y_train2.append(y_train[i])
 
 r = list(range(len(X_test)))
 random.shuffle(r)
@@ -101,22 +97,18 @@ j = 0
 for i in r:
   j+=1
   if(y_test[i] == 3): continue
-  if(j > 5000):
+  if(j > 40):
     X_train2.append(X_train[i])
     y_train2.append(y_train[i])
   else:
     X_test2.append(X_test[i])
     y_test2.append(y_test[i])
-print("Remaining samples")
-print("train: " + str(len(X_train2)))
-print("test: " + str(len(X_test2)))
 
 
-X_train = np.asarray(X_train2) 
+X_train = np.asarray(X_train2)
 y_train = np.asarray(y_train2)
 X_test = np.asarray(X_test2)
 y_test = np.asarray(y_test2)
-
 
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
@@ -131,7 +123,6 @@ X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 
 for i in range(len(X_train)):
-  if(y_train[i] == 3): continue
   image_aux = X_train[i, :, :, :]
   transposed_img = np.transpose(image_aux, (1, 2, 0))
   transposed_img[:, :, 0] -= 123.68
@@ -142,7 +133,6 @@ for i in range(len(X_train)):
   X_train2[i, :, :, :] = image_aux3
 
 for i in range(len(X_test)):
-  if(y_test[i] == 3): continue
   image_aux = X_test[i, :, :, :]
   transposed_img = np.transpose(image_aux, (1, 2, 0))
   transposed_img[:, :, 0] -= 123.68
@@ -180,7 +170,10 @@ model.add(layer_last)
 sgd = SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(optimizer=sgd, loss='mse', metrics=['accuracy'])
 
-checkpointer = ModelCheckpoint(filepath="./temporal_weights/weights_finetunned_alexnet_terrassa.hdf5", verbose=1,
+
+if not os.path.exists("./temporal_weights"):
+  os.makedirs("./temporal_weights")
+checkpointer = ModelCheckpoint(filepath="./temporal_weights/weights_finetunned_vgg_terrassa.hdf5", verbose=1,
                                save_best_only=True)
 
 if not data_augmentation:

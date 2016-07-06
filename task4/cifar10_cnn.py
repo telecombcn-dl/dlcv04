@@ -76,6 +76,8 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
+if not os.path.exists("./temporal_weights"):
+  os.makedirs("./temporal_weights")
 checkpointer = ModelCheckpoint(filepath="./temporal_weights/weights_cifar.hdf5", verbose=1, save_best_only=True)
 
 if not data_augmentation:
