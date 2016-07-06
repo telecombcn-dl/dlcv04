@@ -15,9 +15,9 @@ from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
 
-batch_size = 128
+batch_size = 32
 nb_classes = 10
-nb_epoch = 50
+nb_epoch = 12
 
 # input image dimensions
 img_rows, img_cols = 28, 28
