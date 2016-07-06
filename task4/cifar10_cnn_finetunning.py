@@ -34,6 +34,21 @@ img_rows, img_cols = 32, 32
 # the CIFAR10 images are RGB
 img_channels = 3
 
+
+def pop_layer(model):
+    if not model.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
+
+    model.layers.pop()
+    if not model.layers:
+        model.outputs = []
+        model.inbound_nodes = []
+        model.outbound_nodes = []
+    else:
+        model.layers[-1].outbound_nodes = []
+        model.outputs = [model.layers[-1].output]
+    model.built = False
+
 weights_path="./temporal_weights/weights_cifar.hdf5"
 
 # the data, shuffled and split between train and test sets
@@ -60,14 +75,14 @@ model.add(Flatten(trainable='False'))
 model.add(Dense(512,trainable='False'))
 model.add(Activation('relu',trainable='False'))
 model.add(Dropout(0.5,trainable='False'))
-model.add(Dense(nb_classes,trainable='False'))
+model.add(Dense(10,trainable='False'))
 model.add(Activation('softmax',trainable='False'))
 
 # LOADING WEIGHTS TO FINE-TUNNE THEM
 model.load_weights(weights_path)
 
-model.layers.pop() 
-model.layers.pop()
+pop_layer(model)
+pop_layer(model)
 
 # for layer in model.layers:
 #   layer.trainable= False
@@ -125,6 +140,7 @@ nb_classes = len(set(y_test))
 print(nb_classes)
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
+
 
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
