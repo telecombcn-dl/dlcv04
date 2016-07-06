@@ -6,6 +6,7 @@ loss=[]
 val_loss=[]
 acc=[]
 val_acc=[]
+
 for line in open(log).readlines():
 	aux_loss = 0
 	aux_acc = 0

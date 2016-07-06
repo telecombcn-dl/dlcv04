@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.legend_handler import HandlerLine2D
 
@@ -7,6 +6,7 @@ loss=[]
 val_loss=[]
 acc=[]
 val_acc=[]
+
 for line in open(log).readlines():
 	aux_loss = 0
 	aux_acc = 0
@@ -31,7 +31,6 @@ plt.plot(x,loss, marker="x", label="Training Loss")
 plt.plot(x,val_loss, marker="x", label="Validation Loss")
 plt.legend()
 plt.xlim([1.0,len(loss)])
-# plt.title('Batch 32')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 #plt.show()

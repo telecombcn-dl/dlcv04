@@ -22,8 +22,8 @@ from keras.utils import np_utils
 
 batch_size = 32
 nb_classes = 10
-nb_epoch = 200
-data_augmentation = False
+nb_epoch = 23 #originalment 22
+data_augmentation = True
 
 # input image dimensions
 img_rows, img_cols = 32, 32

@@ -22,7 +22,7 @@ nb_epoch = 12
 # input image dimensions
 img_rows, img_cols = 28, 28
 # number of convolutional filters to use
-nb_filters = 32
+nb_filters = 16
 # size of pooling area for max pooling
 nb_pool = 2
 # convolution kernel size
@@ -48,8 +48,7 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 model = Sequential()
 
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
-                        border_mode='valid',
-                        input_shape=(1, img_rows, img_cols)))
+                        border_mode='valid', input_shape=(1, img_rows, img_cols)))
 model.add(Activation('relu'))
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
 model.add(Activation('relu'))

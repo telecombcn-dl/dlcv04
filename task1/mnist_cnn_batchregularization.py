@@ -13,6 +13,7 @@ from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
+form keras.layers.normalization import BatchNormalization
 from keras.utils import np_utils
 
 batch_size = 128
@@ -48,17 +49,19 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 model = Sequential()
 
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
-                        border_mode='valid',
-                        input_shape=(1, img_rows, img_cols)))
+                        border_mode='valid', input_shape=(1, img_rows, img_cols)))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))

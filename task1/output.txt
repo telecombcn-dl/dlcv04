@@ -1,0 +1,5 @@
+X_train shape: (50000, 3, 32, 32)
+50000 train samples
+10000 test samples
+Using real-time data augmentation.
+Epoch 1/200
