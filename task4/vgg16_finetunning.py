@@ -8,9 +8,12 @@ from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
 from utils.datasets import terrassa
 from scipy.misc import imresize
+from random import shuffle
+import random
+
 import numpy as np
 
-nb_classes = 10
+nb_classes = 13
 batch_size = 16
 nb_epoch = 200
 data_augmentation = False
@@ -80,6 +83,40 @@ def VGG_16(weights_path=None):
 
 (X_train, y_train), (X_test, y_test) = terrassa.load_data()
 
+X_train2 = list()
+y_train2 = list()
+X_test2 = list()
+y_test2 = list()
+
+
+for i in range(len(X_train)):
+  if(y_train[i] == 3): continue
+  X_train2.append(X_train[i])
+  y_train2.append(y_train[i])
+
+r = list(range(len(X_test)))
+random.shuffle(r)
+
+j = 0
+for i in r:
+  j+=1
+  if(y_test[i] == 3): continue
+  if(j > 5000):
+    X_train2.append(X_train[i])
+    y_train2.append(y_train[i])
+  else:
+    X_test2.append(X_test[i])
+    y_test2.append(y_test[i])
+print("Remaining samples")
+print("train: " + str(len(X_train2)))
+print("test: " + str(len(X_test2)))
+
+
+X_train = np.asarray(X_train2) 
+y_train = np.asarray(y_train2)
+X_test = np.asarray(X_test2)
+y_test = np.asarray(y_test2)
+
 
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
@@ -94,6 +131,7 @@ X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 
 for i in range(len(X_train)):
+  if(y_train[i] == 3): continue
   image_aux = X_train[i, :, :, :]
   transposed_img = np.transpose(image_aux, (1, 2, 0))
   transposed_img[:, :, 0] -= 123.68
@@ -104,6 +142,7 @@ for i in range(len(X_train)):
   X_train2[i, :, :, :] = image_aux3
 
 for i in range(len(X_test)):
+  if(y_test[i] == 3): continue
   image_aux = X_test[i, :, :, :]
   transposed_img = np.transpose(image_aux, (1, 2, 0))
   transposed_img[:, :, 0] -= 123.68
@@ -116,7 +155,6 @@ for i in range(len(X_test)):
 X_train = X_train2
 X_test = X_test2
 
-nb_classes = len(set(y_test))
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
@@ -130,11 +168,8 @@ model = VGG_16("./weights/vgg16_weights.h5")
 pop_layer(model)
 
 print len(model.layers)
-for layer in model.layers[1:33]:
+for layer in model.layers:
   layer.trainable = False
-for layer in model.layers[33:]:
-  print layer
-  layer.trainable = True
 
 
 layer_last = Dense(13, activation='softmax')
