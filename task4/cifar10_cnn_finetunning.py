@@ -24,9 +24,9 @@ from utils.datasets import terrassa
 from scipy.misc import imresize
 import numpy as np
 
-batch_size = 32
+batch_size = 64
 nb_classes = 10
-nb_epoch = 200
+nb_epoch = 2000
 data_augmentation = False
 
 # input image dimensions
@@ -42,26 +42,26 @@ weights_path="./temporal_weights/weights_cifar.hdf5"
 model = Sequential()
 
 model.add(Convolution2D(32, 3, 3, border_mode='same',
-                        input_shape=(img_channels, img_rows, img_cols)))
+                        input_shape=(img_channels, img_rows, img_cols),trainable=False))
+model.add(Activation('relu',trainable='False'))
+model.add(Convolution2D(32, 3, 3,trainable='False'))
 model.add(Activation('relu'))
-model.add(Convolution2D(32, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(MaxPooling2D(pool_size=(2, 2), trainable='False'))
+model.add(Dropout(0.25,trainable='False'))
 
-model.add(Convolution2D(64, 3, 3, border_mode='same'))
-model.add(Activation('relu'))
-model.add(Convolution2D(64, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(Convolution2D(64, 3, 3, border_mode='same',trainable='False'))
+model.add(Activation('relu',trainable='False'))
+model.add(Convolution2D(64, 3, 3,trainable='False'))
+model.add(Activation('relu',trainable='False'))
+model.add(MaxPooling2D(pool_size=(2, 2),trainable='False'))
+model.add(Dropout(0.25,trainable='False'))
 
-model.add(Flatten())
-model.add(Dense(512))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(nb_classes))
-model.add(Activation('softmax'))
+model.add(Flatten(trainable='False'))
+model.add(Dense(512,trainable='False'))
+model.add(Activation('relu',trainable='False'))
+model.add(Dropout(0.5,trainable='False'))
+model.add(Dense(nb_classes,trainable='False'))
+model.add(Activation('softmax',trainable='False'))
 
 # LOADING WEIGHTS TO FINE-TUNNE THEM
 model.load_weights(weights_path)
@@ -69,8 +69,8 @@ model.load_weights(weights_path)
 model.layers.pop() 
 model.layers.pop()
 
-for layer in model.layers:
-  layer.trainable= False
+# for layer in model.layers:
+#   layer.trainable= False
 
 nb_classes=13
 
@@ -83,11 +83,13 @@ layer_last2.trainable=True
 model.add(layer_last)
 model.add(layer_last2)
 
+print(model.summary())
+
 
 # let's train the model using SGD + momentum (how original).
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+#sgd = SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy',
-              optimizer=sgd,
+              optimizer="sgd",
               metrics=['accuracy'])
 
 
@@ -120,6 +122,7 @@ X_train=X_train2
 X_test=X_test2
 
 nb_classes = len(set(y_test))
+print(nb_classes)
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
