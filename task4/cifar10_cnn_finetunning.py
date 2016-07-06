@@ -37,15 +37,6 @@ weights_path="./temporal_weights/weights_cifar.hdf5"
 # the data, shuffled and split between train and test sets
 # (X_train2, y_train2), (X_test2, y_test2) = cifar10.load_data()
 
-print('X_train shape:', X_train.shape)
-print(X_train.shape[0], 'train samples')
-print(X_test.shape[0], 'test samples')
-
-
-# convert class vectors to binary class matrices
-Y_train = np_utils.to_categorical(y_train, nb_classes)
-Y_test = np_utils.to_categorical(y_test, nb_classes)
-
 model = Sequential()
 
 model.add(Convolution2D(32, 3, 3, border_mode='same',
