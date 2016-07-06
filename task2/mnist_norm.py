@@ -74,7 +74,9 @@ model.add(Dense(512, no_bias=True,activation="relu", name="fc1"))
 model.add(BatchNormalization())"""patillada """
 
 model.add(Dropout(0.5))
-model.add(Dense(nb_classes, activation="softmax", name="fc2"))
+model.add(Dense(nb_classes, no_bias=True,activation="softmax", name="fc2"))
+
+model.add(BatchNormalization())"""patillada """
 
 # let's train the model using SGD + momentum (how original).
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
