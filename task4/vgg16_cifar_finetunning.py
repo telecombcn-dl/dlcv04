@@ -1,4 +1,3 @@
-from docutils.nodes import citation
 from keras.optimizers import SGD
 from keras.models import Sequential
 from keras.layers.core import Flatten, Dense, Dropout
@@ -64,28 +63,21 @@ def VGG_16(weights_path=None):
 
   if weights_path:
     model.load_weights(weights_path)
+
   return model
 
-
-# model.load_weights("./weights/alexnet_weights.h5")
-
-# im = preprocess_image_batch(['examples/dog.jpg'],img_size=(256,256), crop_size=(227,227), color_mode="rgb")
-
-# model = convnet('alexnet',weights_path="./weights/alexnet_weights.h5", heatmap=False, trainable=False)
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
 
-X_train = X_train[1:1000]
-y_train= y_train[1:1000]
-X_test = X_test[1:100]
-y_test = y_test[1:100]
+X_train = X_train[1:500]
+y_train= y_train[1:500]
+X_test = X_test[1:30]
+y_test = y_test[1:30]
 
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
-
-
 
 X_train2 = np.zeros([len(X_train), 3, 224, 224])
 X_test2 = np.zeros([len(X_test), 3, 224, 224])
@@ -118,7 +110,7 @@ for i in range(len(X_test)):
 X_train = X_train2
 X_test = X_test2
 
-
+nb_classes = len(set(y_test))
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
