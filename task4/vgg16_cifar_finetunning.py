@@ -15,6 +15,19 @@ batch_size = 16
 nb_epoch = 200
 data_augmentation = False
 
+def pop_layer(model):
+    if not model.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
+
+    model.layers.pop()
+    if not model.layers:
+        model.outputs = []
+        model.inbound_nodes = []
+        model.outbound_nodes = []
+    else:
+        model.layers[-1].outbound_nodes = []
+        model.outputs = [model.layers[-1].output]
+    model.built = False
 
 def VGG_16(weights_path=None):
   model = Sequential()
@@ -69,11 +82,12 @@ def VGG_16(weights_path=None):
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
+X_train = X_train[1:3000]
+y_train= y_train[1:3000]
+X_test = X_test[1:100]
+y_test = y_test[1:100]
 
-X_train = X_train[1:500]
-y_train= y_train[1:500]
-X_test = X_test[1:30]
-y_test = y_test[1:30]
+
 
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
@@ -110,7 +124,6 @@ for i in range(len(X_test)):
 X_train = X_train2
 X_test = X_test2
 
-nb_classes = len(set(y_test))
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
@@ -121,10 +134,15 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 model = VGG_16("./weights/vgg16_weights.h5")
 # model = convnet('VGG_16',weights_path="./weights/vgg16_weights.h5", heatmap=False)
 
-model.layers.pop()
+pop_layer(model)
 
-for layer in model.layers:
+print len(model.layers)
+for layer in model.layers[1:33]:
   layer.trainable = False
+for layer in model.layers[33:]:
+  print layer
+  layer.trainable = True
+
 
 layer_last = Dense(10, activation='softmax')
 layer_last.trainable = True
