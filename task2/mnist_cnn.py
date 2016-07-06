@@ -42,16 +42,27 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 model = Sequential()
 
 model.add(Convolution2D(32, 3, 3, border_mode='same',
-                        input_shape=(img_channels, img_rows, img_cols), activation="relu", name="conv1"))
+                        input_shape=(img_channels, img_rows, img_cols),no_bias=True, activation="relu", name="conv1"))
+model.add(BatchNormalization())"""patillada """
+
 first_layer = model.layers[-1]
 # this is a placeholder tensor that will contain our generated images
 input_img = first_layer.input
-model.add(Convolution2D(32, 3, 3, activation="relu", name="conv2"))
+model.add(Convolution2D(32, 3, 3, activation="relu", no_bias=True,name="conv2"))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Convolution2D(64, 3, 3, activation="relu", name="conv3"))
-model.add(Convolution2D(64, 3, 3, activation="relu", name="conv4"))
+model.add(BatchNormalization())"""patillada """
+
+
+model.add(Convolution2D(64, 3, 3, activation="relu",no_bias=True, name="conv3"))
+
+model.add(BatchNormalization())"""patillada """
+
+model.add(Convolution2D(64, 3, 3, activation="relu",no_bias=True, name="conv4"))
+
+model.add(BatchNormalization())"""patillada """
+
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
