@@ -1,36 +1,43 @@
-'''Train a simple deep CNN on the CIFAR10 small images dataset.
-GPU run command:
-    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python cifar10_cnn.py
-It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs.
-(it's still underfitting at that point, though).
-Note: the data was pickled with Python 2, and some encoding issues might prevent you
-from loading it in Python 3. You might have to load it in Python 2,
-save it in a different format, load it in Python 3 and repickle it.
+'''Trains a simple convnet on the MNIST dataset.
+Gets to 99.25% test accuracy after 12 epochs
+(there is still a lot of margin for parameter tuning).
+16 seconds per epoch on a GRID K520 GPU.
 '''
 
 from __future__ import print_function
-from keras.datasets import cifar10
+import numpy as np
+np.random.seed(1337)  # for reproducibility
+
+from keras.datasets import mnist
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
 from keras.layers import Convolution2D, MaxPooling2D
-from keras.optimizers import SGD
 from keras.utils import np_utils
+
 
 batch_size = 32
 nb_classes = 10
-nb_epoch = 10
-data_augmentation = True
+nb_epoch = 12
 
 # input image dimensions
-img_rows, img_cols = 32, 32
-img_width = img_rows
-img_height = img_cols
-# the CIFAR10 images are RGB
-img_channels = 3
+img_rows, img_cols = 28, 28
+# number of convolutional filters to use
+nb_filters = 32
+# size of pooling area for max pooling
+nb_pool = 2
+# convolution kernel size
+nb_conv = 3
 
 # the data, shuffled and split between train and test sets
-(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
+X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+X_train = X_train.astype('float32')
+X_test = X_test.astype('float32')
+X_train /= 255
+X_test /= 255
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
@@ -41,37 +48,53 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 model = Sequential()
 
-model.add(Convolution2D(32, 3, 3, border_mode='same',
-                        input_shape=(img_channels, img_rows, img_cols), activation="relu", name="conv1"))
-first_layer = model.layers[-1]
-# this is a placeholder tensor that will contain our generated images
-input_img = first_layer.input
-model.add(Convolution2D(32, 3, 3, activation="relu", name="conv2"))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
+                        border_mode='valid',bias=None
+                        input_shape=(1, img_rows, img_cols)))
+model.add(Activation('relu'))
 
-model.add(Convolution2D(64, 3, 3, activation="relu", name="conv3"))
-model.add(Convolution2D(64, 3, 3, activation="relu", name="conv4"))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
 
+model.add(BatchNormalization())
+
+model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
+model.add(Dropout(0.25))
 model.add(Flatten())
-model.add(Dense(512, activation="relu", name="fc1"))
+model.add(Dense(128))
+model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(nb_classes, activation="softmax", name="fc2"))
+model.add(Dense(nb_classes))
+model.add(Activation('softmax'))
 
-# let's train the model using SGD + momentum (how original).
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy',
-              optimizer=sgd,
+              optimizer='adadelta',
               metrics=['accuracy'])
 
-X_train = X_train.astype('float32')
-X_test = X_test.astype('float32')
-X_train /= 255
-X_test /= 255
+"""model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
+          verbose=1, validation_data=(X_test, Y_test))
+score = model.evaluate(X_test, Y_test, verbose=0)
+print('Test score:', score[0])
+print('Test accuracy:', score[1])"""
+ datagen = ImageDataGenerator(
+        featurewise_center=False,  # set input mean to 0 over the dataset
+        samplewise_center=False,  # set each sample mean to 0
+        featurewise_std_normalization=False,  # divide inputs by std of the dataset
+        samplewise_std_normalization=False,  # divide each input by its std
+        zca_whitening=False,  # apply ZCA whitening
+        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+        horizontal_flip=True,  # randomly flip images
+        vertical_flip=False)  # randomly flip images
 
-# get the symbolic outputs of each "key" layer (we gave them unique names).
-layer_dict = dict([(layer.name, layer) for layer in model.layers])
+    # compute quantities required for featurewise normalization
+    # (std, mean, and principal components if ZCA whitening is applied)
+    datagen.fit(X_train)
 
-model.fit(X_train, Y_train,batch_size=batch_size,nb_epoch=nb_epoch,validation_data=(X_test, Y_test),shuffle=True)
+    # fit the model on the batches generated by datagen.flow()
+    model.fit_generator(datagen.flow(X_train, Y_train,
+                        batch_size=batch_size),
+                        samples_per_epoch=X_train.shape[0],
+                        nb_epoch=nb_epoch,
+                        validation_data=(X_test, Y_test))
