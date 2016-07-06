@@ -23,6 +23,8 @@ from keras.callbacks import ModelCheckpoint
 from utils.datasets import terrassa
 from scipy.misc import imresize
 import numpy as np
+import os
+import random
 
 batch_size = 64
 nb_classes = 10
@@ -33,6 +35,23 @@ data_augmentation = False
 img_rows, img_cols = 32, 32
 # the CIFAR10 images are RGB
 img_channels = 3
+
+
+def pop_layer(model):
+    if not model.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
+
+    model.layers.pop()
+    if not model.layers:
+        model.outputs = []
+        model.inbound_nodes = []
+        model.outbound_nodes = []
+    else:
+        model.layers[-1].outbound_nodes = []
+        model.outputs = [model.layers[-1].output]
+    model.built = False
+
+
 
 weights_path="./temporal_weights/weights_cifar.hdf5"
 
@@ -60,14 +79,14 @@ model.add(Flatten(trainable='False'))
 model.add(Dense(512,trainable='False'))
 model.add(Activation('relu',trainable='False'))
 model.add(Dropout(0.5,trainable='False'))
-model.add(Dense(nb_classes,trainable='False'))
+model.add(Dense(10,trainable='False'))
 model.add(Activation('softmax',trainable='False'))
 
 # LOADING WEIGHTS TO FINE-TUNNE THEM
 model.load_weights(weights_path)
 
-model.layers.pop() 
-model.layers.pop()
+pop_layer(model)
+pop_layer(model)
 
 # for layer in model.layers:
 #   layer.trainable= False
@@ -93,7 +112,38 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 
-(X_train, y_train), (X_test, y_test) = terrassa.load_data()
+(X_train, y_train), (X_test, y_test) = terrassa.load_data_without_unknown_class()
+
+# reassign 40 samples to test (randomly), as sets are not well balanced
+X_train2 = list(X_train)
+y_train2 = list(y_train)
+X_test2 = list()
+y_test2 = list()
+
+r = list(range(len(X_test)))
+random.shuffle(r)
+
+j = 0
+for i in r:
+  j+=1
+  if(y_test[i] == 3): continue
+  if(j > 40):
+    X_train2.append(X_train[i])
+    y_train2.append(y_train[i])
+  else:
+    X_test2.append(X_test[i])
+    y_test2.append(y_test[i])
+
+
+X_train = np.asarray(X_train2)
+y_train = np.asarray(y_train2)
+X_test = np.asarray(X_test2)
+y_test = np.asarray(y_test2)
+
+print('X_train shape:', X_train.shape)
+print(X_train.shape[0], 'train samples')
+print(X_test.shape[0], 'test samples')
+
 
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
@@ -121,17 +171,16 @@ for i in range(len(X_test)):
 X_train=X_train2
 X_test=X_test2
 
-nb_classes = len(set(y_test))
-print(nb_classes)
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
+
 
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
-checkpointer = ModelCheckpoint(filepath="./temporal_weights/weights_finetunned_terrassa.hdf5", verbose=1, save_best_only=True)
+checkpointer = ModelCheckpoint(filepath="./temporal_weights/weights_cifar_finetunned_terrassa.hdf5", verbose=1, save_best_only=True)
 
 if not data_augmentation:
     print('Not using data augmentation.')
