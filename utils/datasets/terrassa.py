@@ -66,10 +66,9 @@ def load_folder(path, annotationPath=None):
 
   annotations_index = dict()
   curr_index = 0
-  for value in annotations.values():
-    if (value not in annotations_index.keys()):
-      annotations_index[value] = curr_index
-      curr_index = curr_index + 1
+  for value in sorted(set(annotations.values())):
+    annotations_index[value] = curr_index
+    curr_index = curr_index + 1
   if (annotationPath != None):
     f = open(annotationPath, 'wb')
     writer = csv.writer(f)
