@@ -48,14 +48,14 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 model = Sequential()
 
 model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
-                        border_mode='valid',no_bias=True,
+                        border_mode='valid',bias=None,
                         input_shape=(1, img_rows, img_cols)))
 model.add(Activation('relu'))
 
 model.add(BatchNormalization()) #patillada 
 
 model.add()
-model.add(Convolution2D(nb_filters, nb_conv, nb_conv,no_bias=True))
+model.add(Convolution2D(nb_filters, nb_conv, nb_conv,bias=None))
 model.add(Activation('relu'))
 
 model.add(BatchNormalization()) #patillada """
@@ -64,13 +64,13 @@ model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
-model.add(Dense(128),no_bias=True)
+model.add(Dense(128),bias=None)
 model.add(Activation('relu'))
 
 model.add(BatchNormalization()) #"""patillada """
 
 model.add(Dropout(0.5))
-model.add(Dense(nb_classes),no_bias=True)
+model.add(Dense(nb_classes),bias=None)
 model.add(Activation('softmax'))
 
 model.add(BatchNormalization()) #"""patillada """
