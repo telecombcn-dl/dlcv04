@@ -20,10 +20,10 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.utils import np_utils
 
-batch_size = 64
+batch_size = 32
 nb_classes = 10
 nb_epoch = 200
-data_augmentation = True
+data_augmentation = False
 
 # input image dimensions
 img_rows, img_cols = 32, 32
@@ -92,7 +92,7 @@ else:
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=False,  # apply ZCA whitening
-        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+        rotation_range=40,#originalment 0  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
