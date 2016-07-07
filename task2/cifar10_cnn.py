@@ -46,7 +46,7 @@ model.add(Convolution2D(32, 3, 3, border_mode='same',bias=None,
                         input_shape=(img_channels, img_rows, img_cols)))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(Convolution2D(32, 3, 3),bias=None)
+model.add(Convolution2D(32, 3, 3,bias=None))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
