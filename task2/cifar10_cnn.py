@@ -20,9 +20,9 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.utils import np_utils
 
-batch_size = 32
+batch_size = 64
 nb_classes = 10
-nb_epoch = 23 #originalment 22
+nb_epoch = 30 #originalment 22
 data_augmentation = True
 
 # input image dimensions
@@ -42,17 +42,21 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 model = Sequential()
 
-model.add(Convolution2D(32, 3, 3, border_mode='same',
+model.add(Convolution2D(32, 3, 3, border_mode='same',bias=None,
                         input_shape=(img_channels, img_rows, img_cols)))
+model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(Convolution2D(32, 3, 3))
+model.add(Convolution2D(32, 3, 3),bias=None)
+model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Convolution2D(64, 3, 3, border_mode='same'))
+model.add(Convolution2D(64, 3, 3, border_mode='same',bias=None))
+model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(Convolution2D(64, 3, 3))
+model.add(Convolution2D(64, 3, 3,bias=None))
+model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
