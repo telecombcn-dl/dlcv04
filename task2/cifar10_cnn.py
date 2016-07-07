@@ -31,7 +31,7 @@ img_rows, img_cols = 32, 32
 img_channels = 3
 
 # the data, shuffled and split between train and test sets
-(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+(X_train, y_train), (X_test, y_test) = cifar10.load_data() #nomes em fixo en la test
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
@@ -74,10 +74,15 @@ model.compile(loss='categorical_crossentropy',
               optimizer=sgd,
               metrics=['accuracy'])
 
-X_train = X_train.astype('float32')
+#carregar weights
+#model.load_weights('my_model_weights.h5')
+
+#X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
-X_train /= 255
+#X_train /= 255
 X_test /= 255
+
+#model.evaluate
 
 if not data_augmentation:
     print('Not using data augmentation.')
@@ -112,3 +117,4 @@ else:
                         samples_per_epoch=X_train.shape[0],
                         nb_epoch=nb_epoch,
                         validation_data=(X_test, Y_test))
+    #model.save_weights('my_model_weights.h5')
