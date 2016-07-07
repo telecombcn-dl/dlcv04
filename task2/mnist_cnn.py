@@ -15,7 +15,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
 
-batch_size = 16
+batch_size = 32
 nb_classes = 10
 nb_epoch = 12
 
