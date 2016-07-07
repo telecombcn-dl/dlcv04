@@ -20,9 +20,9 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
 from keras.utils import np_utils
 
-batch_size = 32
+batch_size = 64
 nb_classes = 10
-nb_epoch = 23 #originalment 22
+nb_epoch = 30 #originalment 22
 data_augmentation = True
 
 # input image dimensions
