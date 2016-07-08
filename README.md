@@ -1,10 +1,18 @@
 # dlcv04
 
-TEAM 4:
+This is the repository for the group 4 for the seminar of Deep Learning for Computer Vision in ETSETB:
 
-Project slides
+https://github.com/imatge-upc/telecombcn-2016-dlcv/
 
-https://github.com/imatge-upc/telecombcn-2016-dlcv/blob/gh-pages/slides/D1P-kickoff.pdf
+And the group is formed by:
+
+Manel Baradad
+Míriam Bellver
+Martí Cervià
+Hector Esteban
+Carlos Roig
+
+We have performed 5 different tasks, described in the following lines:
 
 TASK 1: ARCHITECTURE
 1. Build network for classification problem
@@ -28,10 +36,14 @@ TASK 4: TRANSFER LEARNING
 
 TASK 5: OPEN PROJECT
 
-DATASETS:
-Keras has classes to download MNIST and CIFAR10 datasets. 
-We should do the same for Terrassa Buildings 900. The link of the dataset is the following:
+1. We have played with neural style, changing the features that encode the style and see the results.
 
-https://imatge.upc.edu/web/resources/terrassa-buildings-900
+DATASETS:
+
+We have worked with three different Datasets:
+
+MNIST
+CIFAR10
+Terrassa-building-900 (https://imatge.upc.edu/web/resources/terrassa-buildings-900)
 
 
