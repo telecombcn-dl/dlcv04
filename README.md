@@ -6,10 +6,10 @@ https://github.com/imatge-upc/telecombcn-2016-dlcv/
 
 And the group is formed by:
 
-Manel Baradad
-Míriam Bellver
-Martí Cervià
-Hector Esteban
+Manel Baradad,
+Míriam Bellver,
+Martí Cervià,
+Hector Esteban,
 Carlos Roig
 
 We have performed 5 different tasks, described in the following lines:
@@ -35,7 +35,6 @@ TASK 4: TRANSFER LEARNING
 2. Off-the-shelf convnet
 
 TASK 5: OPEN PROJECT
-
 1. We have played with neural style, changing the features that encode the style and see the results.
 
 DATASETS:
