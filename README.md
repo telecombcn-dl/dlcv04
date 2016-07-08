@@ -12,6 +12,11 @@ Martí Cervià,
 Hector Esteban,
 Carlos Roig
 
+The slides of the project can be seen here:
+
+https://docs.google.com/presentation/d/1daS4M7e5Grk6Ytqk2kdapNonDVCPKwiv5HxscIA8UQI/edit?usp=sharing
+
+
 We have performed 5 different tasks, described in the following lines:
 
 TASK 1: ARCHITECTURE
